@@ -1,0 +1,19 @@
+{
+  "name": "ndapi",
+  "version": "1.0.0",
+  "description": "creación de API proyecto Novedades Daniela",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeminarioSoftware-ND/ND_API.git"
+  },
+  "author": "Marcos Elí Sorto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SeminarioSoftware-ND/ND_API/issues"
+  },
+  "homepage": "https://github.com/SeminarioSoftware-ND/ND_API#readme"
+}
