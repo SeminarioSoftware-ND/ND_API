@@ -21,3 +21,6 @@ exports.actualizarUsuario = async (req, res, next) => {};
 
 //Inhabilitar un usuario
 exports.inhabilitarUsuario = async (req, res, next) => {};
+
+// habilitar un usuario
+exports.habilitarUsuario = async (req, res, next) => {};
