@@ -9,6 +9,35 @@ const usuarioShema = new Schema({
   apellido: {
     type: String,
     trim: true
+  },
+  imagen: {
+    type: String,
+    trim: true
+  },
+  correo: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    trim: true
+  },
+  password: {
+    type: String,
+    trim: true
+  },
+  token: {
+    type: String,
+    trim: true
+  },
+  expira: {
+    type: String
+  },
+  url: {
+    type: String,
+    trim: true
+  },
+  estado: {
+    type: Number,
+    default: 1
   }
 });
 

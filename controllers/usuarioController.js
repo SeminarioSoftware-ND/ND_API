@@ -1,10 +1,64 @@
 const Usuario = require("../models/Usuario");
 // obtener la lista de usuario habilitados
-exports.listarUsuarios = async (req, res, next) => {};
+exports.listarUsuarios = async (req, res, next) => {
+  try {
+    const usuarios = await Usuario.find({ estado: 1 });
+    res.status(200).send(usuarios);
+  } catch (error) {
+    res
+      .status(422)
+      .send({ error: "Hay un problema al momento de obtener los usuarios." });
+  }
+};
+
+//obtener la lista de usuarios inhabilitados
+exports.listarUsuariosInhabilitados = async (req, res, next) => {
+  try {
+    const usuarios = await Usuario.find({ estado: 0 });
+
+    if (!usuarios) {
+      res
+        .status(404)
+        .send({ mensaje: "No hay perfiles de usuario inhabilitados." });
+    }
+    res.status(200).send(usuarios);
+  } catch (error) {
+    res
+      .status(422)
+      .send({ error: "Hay un problema al momento de obtener los usuarios." });
+  }
+};
+
+// obtener la información de un usuario en particular
+exports.mostrarUsuario = async (req, res, next) => {
+  try {
+    const elUsuario = await Usuario.find({ url: req.params, url });
+
+    // validamos su¿i existe el usuario
+    if (!elUsuario) {
+      res.status(404).send({ error: "El perfil de usuario no existe." });
+    }
+    res.status(200).send(elUsuario);
+  } catch (error) {
+    res.status(422).send({
+      error: "Ha ocurrido un error al momento de obtener el perfil de usuario"
+    });
+  }
+};
 
 // Agregar un nuevo usuario
 exports.agregarUsuario = async (req, res, next) => {
   const usuario = new Usuario(req.body);
+  // evaluar si se ingresan los datos necesarios.
+  if (!usuario.nombre) {
+    res
+      .status(422)
+      .send({ alerta: "Necesitas ingresar el nombre de usuario." });
+  } else if (!usuario.correo) {
+    res.status(422).send({ alerta: "Necesitas ingresar un correo." });
+  } else if (!usuario.password) {
+    res.status(422).send({ alerta: "Debe ingresar una contraseña." });
+  }
 
   try {
     await usuario.save();
@@ -17,10 +71,58 @@ exports.agregarUsuario = async (req, res, next) => {
 };
 
 // Actualizar la información de un usuario en específico
-exports.actualizarUsuario = async (req, res, next) => {};
+exports.actualizarUsuario = async (req, res, next) => {
+  try {
+    const elUsuario = await Usuario.findOneAndUpdate(
+      {
+        url: req.params.url
+      },
+      req.body,
+      { new: true }
+    );
+
+    res.status(200).send({ mensaje: "Perfil actualizado satisfactoriamente." });
+  } catch (error) {
+    res
+      .status(422)
+      .send({ error: "Ha ocurrido un error durante la actualización." });
+  }
+};
 
 //Inhabilitar un usuario
-exports.inhabilitarUsuario = async (req, res, next) => {};
+exports.inhabilitarUsuario = async (req, res, next) => {
+  try {
+    const elUsuario = await Usuario.findOneAndUpdate(
+      { url: req.params.url },
+      { estado: 0 },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .send({ mensaje: "Perfil de usuario inhabilitado satifactoriamente." });
+  } catch (error) {
+    res
+      .status(422)
+      .send({ error: "Ha ocurrido un error durante la inhabilitación." });
+  }
+};
 
 // habilitar un usuario
-exports.habilitarUsuario = async (req, res, next) => {};
+exports.habilitarUsuario = async (req, res, next) => {
+  try {
+    const elUsuario = await Usuario.findOneAndUpdate(
+      { url: req.params.url },
+      { estado: 1 },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .send({ mensaje: "Perfil de usuario habilitado satifactoriamente." });
+  } catch (error) {
+    res
+      .status(422)
+      .send({ error: "Ha ocurrido un error durante la habilitación." });
+  }
+};
