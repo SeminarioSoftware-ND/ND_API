@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routes = require("./routes/index");
+const cors = require("cors");
 
 // creamos la constante del servidor
 const app = express();
@@ -22,6 +23,17 @@ mongoose.connection.on("connected", () => {
 
 mongoose.connection.on("error", err => {
   console.log("Error al conectar con la base de datos", err);
+});
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header(
+    "Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS"
+  );
+  next();
 });
 
 // Habilitar body -parser

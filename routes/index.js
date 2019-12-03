@@ -6,14 +6,18 @@ module.exports = function() {
   // ----------------------------------------------------Control de usuarios-------------------------------------------|
 
   /*Agregar nuevos usuarios*/
-  router.post("/usuarios", usuarioController.agregarUsuario);
+  router.post(
+    "/usuarios",
+    usuarioController.subirImagen,
+    usuarioController.agregarUsuario
+  );
 
   /*Listar todos los usuarios habilitados*/
-  router.get("/usuarios/listaDeUsuarios", usuarioController.listarUsuarios);
+  router.get("/usuarios/usuariosHabilitados", usuarioController.listarUsuarios);
 
   /*Listar todos los usuarios inhabilitados */
   router.get(
-    "/usuarios/listaDeUsuariosInhabilitados",
+    "/usuarios/usuariosInhabilitados",
     usuarioController.listarUsuariosInhabilitados
   );
 
