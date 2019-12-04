@@ -2,7 +2,7 @@ const Usuario = require("../models/Usuario");
 const shortid = require("shortid");
 const multer = require("multer");
 
-// obtener la lista de usuario habilitados
+// obtener la lista de usuarios habilitados
 exports.listarUsuarios = async (req, res, next) => {
   try {
     const usuarios = await Usuario.find({ estado: 1 });
@@ -53,6 +53,9 @@ exports.mostrarUsuario = async (req, res, next) => {
 // Agregar un nuevo usuario
 exports.agregarUsuario = async (req, res, next) => {
   console.log("nueva solicitud");
+  console.log(req.body);
+  console.log("**************************************************");
+  console.log(req);
 
   const usuario = new Usuario(req.body);
 
@@ -171,7 +174,7 @@ const configuracionMulter = {
   // Donde se almacena la imagen
   storage: (fileStorage = multer.diskStorage({
     destination: (req, res, cb) => {
-      cb(null, __dirname + "../../public/uploads/perfiles");
+      cb(null, __dirname + "../..   /public/uploads/perfiles");
     },
     filename: (req, file, cb) => {
       const extension = file.mimetype.split("/")[1];
