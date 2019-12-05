@@ -6,11 +6,10 @@ module.exports = function() {
   // ----------------------------------------------------Control de usuarios-------------------------------------------|
 
   /*Agregar nuevos usuarios*/
-  router.post(
-    "/usuarios",
-    usuarioController.subirImagen,
-    usuarioController.agregarUsuario
-  );
+  router.post("/usuarios", usuarioController.agregarUsuario);
+
+  // subir imagen
+  router.post("/usuarioImagen", usuarioController.subirImagen);
 
   /*Listar todos los usuarios habilitados*/
   router.get("/usuarios/usuariosHabilitados", usuarioController.listarUsuarios);

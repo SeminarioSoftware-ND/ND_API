@@ -15,7 +15,8 @@ const usuarioSchema = new Schema({
   },
   imagen: {
     type: String,
-    trim: true
+    trim: true,
+    default: "usuarioDefecto.jpg"
   },
   correo: {
     type: String,

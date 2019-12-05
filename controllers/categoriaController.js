@@ -75,7 +75,18 @@ exports.agregarCategoria = async (req, res, next) => {
 };
 
 // Actualizar una categoría
-exports.actualizarCategoria = async (req, res, next) => {};
+exports.actualizarCategoria = async (req, res, next) => {
+  try {
+    const laCategoria = await Categoria.findOneAndUpdate(
+      {
+        url: req.params.url
+      },
+      req.body,
+      { new: true }
+    );
+    res.status(200).send({ mensaje: "Categoría actualizada correctamente." });
+  } catch (error) {}
+};
 
 // Inhabilitar una categoría
 exports.inhabilitarCategoria = async (req, res, next) => {

@@ -52,11 +52,9 @@ exports.mostrarUsuario = async (req, res, next) => {
 
 // Agregar un nuevo usuario
 exports.agregarUsuario = async (req, res, next) => {
-  console.log("nueva solicitud");
+  console.log("nueva solicitud 1");
   console.log(req.body);
   console.log("**************************************************");
-  console.log(req);
-
   const usuario = new Usuario(req.body);
 
   // evaluar si se ingresan los datos necesarios.
@@ -69,11 +67,6 @@ exports.agregarUsuario = async (req, res, next) => {
   } else if (!usuario.password) {
     res.status(422).send({ mensaje: "Debe ingresar una contraseña." });
   } else {
-    //evaluamos si hay una imagen de perfil
-    if (req.file) {
-      usuario.imagen = req.file.filename;
-    }
-
     try {
       await usuario.save();
       res.status(200).send({ mensaje: "Usuario registrado correctamente" });
@@ -152,7 +145,7 @@ exports.subirImagen = (req, res, next) => {
         if (error.code === "LIMIT_FILE_SIZE") {
           res.status(422).send({ mensaje: "Tamaño de imagen muy grande" });
         } else {
-          res.status(422).send({ mensaje: "Ocurrió un error de subida" });
+          res.status(422).send({ mensaje: `${error.message}` });
         }
       } else {
         // Errores del usuario
@@ -160,7 +153,7 @@ exports.subirImagen = (req, res, next) => {
       }
       return;
     } else {
-      return next();
+      res.status(200).send({ imagen: `${req.file.filename}` });
     }
   });
 };
@@ -174,7 +167,7 @@ const configuracionMulter = {
   // Donde se almacena la imagen
   storage: (fileStorage = multer.diskStorage({
     destination: (req, res, cb) => {
-      cb(null, __dirname + "../..   /public/uploads/perfiles");
+      cb(null, __dirname + "../../public/uploads/perfiles");
     },
     filename: (req, file, cb) => {
       const extension = file.mimetype.split("/")[1];
@@ -194,4 +187,4 @@ const configuracionMulter = {
   }
 };
 
-const upload = multer(configuracionMulter).single("imagen");
+const upload = multer(configuracionMulter).single("file");
