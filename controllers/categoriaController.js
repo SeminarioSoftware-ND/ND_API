@@ -1,4 +1,5 @@
 const Categoria = require("../models/Categoria");
+const shortid = require("shortid");
 const multer = require("multer");
 
 //  Obtener la lista de categorias habilitadas
@@ -85,7 +86,11 @@ exports.actualizarCategoria = async (req, res, next) => {
       { new: true }
     );
     res.status(200).send({ mensaje: "Categoría actualizada correctamente." });
-  } catch (error) {}
+  } catch (error) {
+    res.status(422).send({
+      error: "Ocurrió un error al momento de actualizar la categoría-"
+    });
+  }
 };
 
 // Inhabilitar una categoría
@@ -122,4 +127,56 @@ exports.habilitarCategoria = async (req, res, next) => {
   }
 };
 
-// Subir una imagen
+// función para subir imagen de usuario
+// Subir una imagen al servidor
+exports.subirImagen = (req, res, next) => {
+  upload(req, res, function(error) {
+    if (error) {
+      // Errores de multer
+      if (error instanceof multer.MulterError) {
+        if (error.code === "LIMIT_FILE_SIZE") {
+          res.status(422).send({ mensaje: "Tamaño de imagen muy grande" });
+        } else {
+          res.status(422).send({ mensaje: `${error.message}` });
+        }
+      } else {
+        // Errores del usuario
+        res.status(422).send({ mensaje: `${error.message}` });
+      }
+      return;
+    } else {
+      res.status(200).send({ imagen: `${req.file.filename}` });
+    }
+  });
+};
+
+// Opciones de configuración de Multer
+const configuracionMulter = {
+  // Tamaño máximo del archivo en bytes
+  limits: {
+    fileSize: 200000
+  },
+  // Donde se almacena la imagen
+  storage: (fileStorage = multer.diskStorage({
+    destination: (req, res, cb) => {
+      cb(null, __dirname + "../../public/uploads/categorias");
+    },
+    filename: (req, file, cb) => {
+      const extension = file.mimetype.split("/")[1];
+      cb(null, `${shortid.generate()}.${extension}`);
+    }
+  })),
+
+  // Verificar que es una imagen válida mediante mimetype
+  fileFilter(req, file, cb) {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+      // El callback se ejecuta como true o false
+      // se retorna true cuando se acepta la imagen
+      cb(null, true);
+    } else {
+      cb(new Error("Formato de archivo no válido. Solo JPEG o PNG."), false);
+    }
+  }
+};
+
+const upload = multer(configuracionMulter).single("file");

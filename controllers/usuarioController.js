@@ -52,11 +52,8 @@ exports.mostrarUsuario = async (req, res, next) => {
 
 // Agregar un nuevo usuario
 exports.agregarUsuario = async (req, res, next) => {
-  console.log("nueva solicitud 1");
-  console.log(req.body);
-  console.log("**************************************************");
   const usuario = new Usuario(req.body);
-
+  console.log("nueva solicitud");
   // evaluar si se ingresan los datos necesarios.
   if (!usuario.nombre) {
     res

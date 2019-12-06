@@ -41,5 +41,7 @@ module.exports = function() {
     usuarioController.habilitarUsuario
   );
 
+  // ----------------------------------------------------Control de categorías-------------------------------------------|
+
   return router;
 };
