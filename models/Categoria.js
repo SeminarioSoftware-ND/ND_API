@@ -25,7 +25,7 @@ const categoriaSchema = new Schema({
   fechaModificacion: {
     type: String,
     trim: true,
-    default: Date.now
+    default: Date.now()
   },
   registradoPor: {
     type: Schema.ObjectId,
@@ -37,4 +37,10 @@ const categoriaSchema = new Schema({
   }
 });
 
+// Middleware para crear el url
+categoriaSchema.pre("save", function(next) {
+  const url = slug(this.nombre);
+  this.url = `${url}-${shortid.generate()}`;
+  next();
+});
 module.exports = mongoose.model("Categoria", categoriaSchema);

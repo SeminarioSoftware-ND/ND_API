@@ -1,12 +1,11 @@
-const Categorias = require("../models/Categoria");
+const Categoria = require("../models/Categoria");
 const shortid = require("shortid");
 const multer = require("multer");
 
 //  Obtener la lista de categorias habilitadas
 exports.listarCategorias = async (req, res, next) => {
   try {
-    const categorias = Categorias.find({});
-
+    const categorias = await Categoria.find({});
     // verificamosis hay categorias a mostar
     if (!categorias) {
       res.status(404).send({ mensaje: "No hay cantegorias registradas." });
@@ -52,7 +51,7 @@ exports.mostrarCategoria = async (req, res, next) => {
 exports.agregarCategoria = async (req, res, next) => {
   // obtenemos los datos del req.body
   const categoria = new Categoria(req.body);
-
+  console.log(req.body);
   ///validamos que los datos sean correctos
   if (!categoria.nombre) {
     res

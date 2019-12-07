@@ -87,9 +87,7 @@ usuarioSchema.pre("save", function(next) {
 usuarioSchema.post("save", function(error, doc, next) {
   // Verificar que es un error de MongoDB
   if (error.name === "MongoError" && error.code === 11000) {
-    next(
-      " Ya existe un usuario con la dirección de correo electrónico ingresada"
-    );
+    next({ mensaje: "Ya existe un registro con éste correo" });
   } else {
     next(error);
   }

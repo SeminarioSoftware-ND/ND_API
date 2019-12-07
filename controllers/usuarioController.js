@@ -5,7 +5,10 @@ const multer = require("multer");
 // obtener la lista de usuarios habilitados
 exports.listarUsuarios = async (req, res, next) => {
   try {
-    const usuarios = await Usuario.find({ estado: 1 });
+    const usuarios = await Usuario.find({});
+    if(!usuarios){
+      res.status(404).send({mensaje: "No hay usuarios a mostrar"});
+    }
     res.status(200).send(usuarios);
   } catch (error) {
     res
