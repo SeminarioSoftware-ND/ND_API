@@ -24,7 +24,8 @@ const categoriaSchema = new Schema({
   },
   fechaModificacion: {
     type: String,
-    trim: true
+    trim: true,
+    default: Date.now
   },
   registradoPor: {
     type: Schema.ObjectId,
@@ -36,4 +37,4 @@ const categoriaSchema = new Schema({
   }
 });
 
-module.exports = mongoose.Schema("Categoria", categoriaSchema);
+module.exports = mongoose.model("Categoria", categoriaSchema);

@@ -1,11 +1,11 @@
-const Categoria = require("../models/Categoria");
+const Categorias = require("../models/Categoria");
 const shortid = require("shortid");
 const multer = require("multer");
 
 //  Obtener la lista de categorias habilitadas
 exports.listarCategorias = async (req, res, next) => {
   try {
-    const categorias = Categoria.find({ estado: 1 });
+    const categorias = Categorias.find({});
 
     // verificamosis hay categorias a mostar
     if (!categorias) {
