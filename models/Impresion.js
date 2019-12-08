@@ -53,13 +53,3 @@ impresionSchemma.pre("save", function(next) {
 
   next();
 });
-
-// Middleware para crear url
-usuarioSchema.pre("save", function(next) {
-  // Crear la URL
-  const url = slug(this.nombre);
-  this.url = `${url}-${shortid.generate()}`;
-  //console.log(this.url);
-
-  next();
-});
