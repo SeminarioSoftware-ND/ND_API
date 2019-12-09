@@ -54,17 +54,21 @@ exports.listarImpresionesRealizadas = async (req, res, next) => {
 };
 
 // listar impresión en particular
-try {
-  const laImpresion = await Impresion.find({ url: req.params.url });
-  if (!laImpresion) {
-    res.status(404).send({ mensaje: "No se encuentra el pedido solicitado." });
+exports.mostrarImpresion = async (req, res, next) => {
+  try {
+    const laImpresion = await Impresion.find({ url: req.params.url });
+    if (!laImpresion) {
+      res
+        .status(404)
+        .send({ mensaje: "No se encuentra el pedido solicitado." });
+    }
+    res.status(200).send(laImpresion);
+  } catch (error) {
+    res.status(422).send({
+      error: "Ocurrió un error al momento de cargar el pedido especificado."
+    });
   }
-  res.status(200).send(laImpresion);
-} catch (error) {
-  res.status(422).send({
-    error: "Ocurrió un error al momento de cargar el pedido especificado."
-  });
-}
+};
 
 // agregar una nueva impresión
 exports.agregarImpresion = async (req, res, next) => {
@@ -140,8 +144,8 @@ exports.eliminarImpresion = async (req, res, next) => {
 
 // subir una image
 
-// Subir una imagen al servidor
-exports.subirImagen = (req, res, next) => {
+// Subir un archivo al servidor
+exports.subirArchivo = (req, res, next) => {
   upload(req, res, function(error) {
     if (error) {
       // Errores de multer

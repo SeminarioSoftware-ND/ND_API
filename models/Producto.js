@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const slug = require("slug");
 const shortid = require("shortid");
+const Schema = mongoose.Schema;
 
 // definimos el esquema a utilizar
 
-const productoSchemma = new mongoose.Schema({
+const productoSchemma = new Schema({
   nombre: {
     type: String,
     trim: true
@@ -14,7 +15,7 @@ const productoSchemma = new mongoose.Schema({
     trim: true
   },
   categoria: {
-    type: Schema.objectId,
+    type: Schema.ObjectId,
     ref: "Categoria"
   },
   cantidad: {
@@ -22,7 +23,7 @@ const productoSchemma = new mongoose.Schema({
     default: 1
   },
   registradoPor: {
-    type: Schema.objectId,
+    type: Schema.ObjectId,
     ref: "Usuario"
   },
   fechaDeCreacion: {

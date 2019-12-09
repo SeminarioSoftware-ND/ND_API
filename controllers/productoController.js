@@ -120,7 +120,7 @@ exports.inhabilitarProducto = async (req, res, next) => {
 };
 
 // habilitar un producto
-exports.inhabilitarProducto = async (req, res, next) => {
+exports.habilitarProducto = async (req, res, next) => {
   try {
     const elProducto = await Producto.findOneAndUpdate(
       { url: req.params.ur },

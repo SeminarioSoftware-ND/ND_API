@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const shortid = require("shortid");
 const slug = require("slug");
-const Schemma = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-const impresionSchemma = new Schemma({
+const impresionSchemma = new Schema({
   documento: {
     type: String,
     trim: true
@@ -30,7 +30,7 @@ const impresionSchemma = new Schemma({
     type: String
   },
   usuario: {
-    type: Schema.objectId,
+    type: Schema.ObjectId,
     ref: "Usuario"
   },
   estado: {
@@ -54,3 +54,5 @@ impresionSchemma.pre("save", function(next) {
 
   next();
 });
+
+module.exports = mongoose.model("Impresion", impresionSchemma);
