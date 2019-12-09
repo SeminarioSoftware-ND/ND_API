@@ -6,8 +6,8 @@ const multer = require("multer");
 exports.listarUsuarios = async (req, res, next) => {
   try {
     const usuarios = await Usuario.find({});
-    if(!usuarios){
-      res.status(404).send({mensaje: "No hay usuarios a mostrar"});
+    if (!usuarios) {
+      res.status(404).send({ mensaje: "No hay usuarios a mostrar" });
     }
     res.status(200).send(usuarios);
   } catch (error) {
@@ -56,7 +56,7 @@ exports.mostrarUsuario = async (req, res, next) => {
 // Agregar un nuevo usuario
 exports.agregarUsuario = async (req, res, next) => {
   const usuario = new Usuario(req.body);
-  console.log("nueva solicitud");
+
   // evaluar si se ingresan los datos necesarios.
   if (!usuario.nombre) {
     res

@@ -10,7 +10,8 @@ const impresionSchemma = new Schemma({
   },
   color: {
     type: String,
-    trim: true
+    trim: true,
+    default: "Blanco/negro"
   },
   tamanio: {
     type: String,
