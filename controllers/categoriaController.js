@@ -9,17 +9,11 @@ exports.mostrarImagen = (req, res, next) => {
   var options = {
     root: path.join(__dirname, "../public/uploads/categorias/"),
     dotfiles: "deny"
-    
   };
 
   var fileName = req.query.url;
 
-res.status(200).sendFile(path.resolve(`${options.root}/${fileName}`),function(err)={
-  if(err){
-    res.status(422).send({mensaje: "Ocurrió un error al momento de cargar la imagen."})
-  }
-});
- 
+  res.status(200).sendFile(path.resolve(`${options.root}/${fileName}`));
 };
 
 //  Obtener la lista de categorias habilitadas
