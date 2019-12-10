@@ -81,7 +81,7 @@ exports.agregarImpresion = async (req, res, next) => {
       .send({ mensaje: "Necesitas agregar el archivo a imprimir." });
   } else if (!impresion.tamanio || !impresion.tipoHoja) {
     res.status(422).send({
-      mensaje: "Necesitas seleccionar el tipo de hoja y rl tamaño del papel."
+      mensaje: "Necesitas seleccionar el tipo de hoja y el tamaño del papel."
     });
   } else if (!impresion.cantidad) {
     res
@@ -146,6 +146,11 @@ exports.eliminarImpresion = async (req, res, next) => {
 
 // Subir un archivo al servidor
 exports.subirArchivo = (req, res, next) => {
+  console.log(req.body);
+
+  //if (!req.body.file) {
+  res.status(422).send({ mensaje: "debes ingresar la imagen" });
+  // } else {
   upload(req, res, function(error) {
     if (error) {
       // Errores de multer
@@ -164,6 +169,7 @@ exports.subirArchivo = (req, res, next) => {
       res.status(200).send({ imagen: `${req.file.filename}` });
     }
   });
+  // }
 };
 
 // Opciones de configuración de Multer
@@ -185,12 +191,12 @@ const configuracionMulter = {
 
   // Verificar que es una imagen válida mediante mimetype
   fileFilter(req, file, cb) {
-    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    if (file.mimetype === "application/vnd.ms-excel") {
       // El callback se ejecuta como true o false
       // se retorna true cuando se acepta la imagen
       cb(null, true);
     } else {
-      cb(new Error("Formato de archivo no válido. Solo JPEG o PNG."), false);
+      cb(new Error("Formato de archivo no válido."), false);
     }
   }
 };

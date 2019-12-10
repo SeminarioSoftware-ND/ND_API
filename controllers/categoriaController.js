@@ -1,6 +1,26 @@
 const Categoria = require("../models/Categoria");
 const shortid = require("shortid");
 const multer = require("multer");
+const path = require("path");
+
+// Mostrar una imagen  de categoría
+exports.mostrarImagen = (req, res, next) => {
+  console.log("petición");
+  var options = {
+    root: path.join(__dirname, "../public/uploads/categorias/"),
+    dotfiles: "deny"
+    
+  };
+
+  var fileName = req.query.url;
+
+res.status(200).sendFile(path.resolve(`${options.root}/${fileName}`),function(err)={
+  if(err){
+    res.status(422).send({mensaje: "Ocurrió un error al momento de cargar la imagen."})
+  }
+});
+ 
+};
 
 //  Obtener la lista de categorias habilitadas
 exports.listarCategorias = async (req, res, next) => {

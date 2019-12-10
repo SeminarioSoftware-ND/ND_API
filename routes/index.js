@@ -79,6 +79,10 @@ module.exports = function() {
   //subir una imagen para la categoría
   router.post("/categoriaImagen", categoriaController.subirImagen);
 
+  // mostar imagen de categoría
+ router.get("/imagen",categoriaController.mostrarImagen)
+
+
   // ----------------------------------------------------Control de productos-------------------------------------------|
 
   // listar todos los pruductos

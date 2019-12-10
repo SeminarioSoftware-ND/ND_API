@@ -3,10 +3,13 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routes = require("./routes/index");
 const cors = require("cors");
+const path = require("path");
 
 // creamos la constante del servidor
 const app = express();
 
+// Definir ruta para archivos estáticos
+app.use(express.static("public"));
 //Configuración de conexión a mogo y mongoose
 const mongoUri =
   " mongodb+srv://root:SortoDiaz1414@cluster0-we4ac.mongodb.net/novedadesDaniela";
@@ -39,6 +42,8 @@ app.use(function(req, res, next) {
 // Habilitar body -parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// definiendo la ruta estática
 
 // Implementar las rutas
 app.use("/", routes());

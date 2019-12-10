@@ -31,6 +31,11 @@ const categoriaSchema = new Schema({
     type: Schema.ObjectId,
     ref: "Usuario"
   },
+  imagen: {
+    type: String,
+    trim: true,
+    default: "categoriaDefecto.jpg"
+  },
   url: {
     type: String,
     trim: true
