@@ -53,35 +53,28 @@ module.exports = function() {
   );
 
   // listar una caategorí en particular
-  router.get("/categoria/:url", categoriaController.mostrarCategoria);
+  router.get("/categoria", categoriaController.mostrarCategoria);
 
   // crear una nueva ctegoría
   router.post("/crearCategoria", categoriaController.agregarCategoria);
 
   // actualizar una categoría
-  router.put(
+  router.post(
     "/actualizarCategoria/:url",
     categoriaController.actualizarCategoria
   );
 
   // inhabilitar  una categoría
-  router.put(
-    "/inhabilitarCategoria/:url",
-    categoriaController.inhabilitarCategoria
-  );
+  router.put("/inhabilitarCategoria", categoriaController.inhabilitarCategoria);
 
   // habilitar una categoría
-  router.put(
-    "/habilitarCategoria/:url",
-    categoriaController.habilitarCategoria
-  );
+  router.put("/habilitarCategoria", categoriaController.habilitarCategoria);
 
   //subir una imagen para la categoría
   router.post("/categoriaImagen", categoriaController.subirImagen);
 
   // mostar imagen de categoría
- router.get("/imagen",categoriaController.mostrarImagen)
-
+  router.get("/imagen", categoriaController.mostrarImagen);
 
   // ----------------------------------------------------Control de productos-------------------------------------------|
 

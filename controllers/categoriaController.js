@@ -2,6 +2,45 @@ const Categoria = require("../models/Categoria");
 const shortid = require("shortid");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+
+// Actualizar una categoría
+exports.actualizarCategoria = async (req, res, next) => {
+  console.log("nuev petición");
+  console.log(req.body);
+
+  if (
+    req.body.imagenActual != req.body.imagen &&
+    req.body.imagenActual != "categoriaDefecto.jpg"
+  ) {
+    // 2. Eliminamos el logo anterior
+    path.join(__dirname, "../public/uploads/categorias/");
+
+    fs.unlink(
+      path.join(
+        __dirname,
+        `../public/uploads/categorias/${elPerfil.actual.trim()}`
+      ),
+      err => {
+        if (err) throw err;
+      }
+    );
+  }
+  try {
+    const laCategoria = await Categoria.findOneAndUpdate(
+      {
+        url: req.params.url
+      },
+      req.body,
+      { new: true }
+    );
+    res.status(200).send({ mensaje: "Categoría actualizada correctamente." });
+  } catch (error) {
+    res.status(422).send({
+      error: "Ocurrió un error al momento de actualizar la categoría-"
+    });
+  }
+};
 
 // Mostrar una imagen  de categoría
 exports.mostrarImagen = (req, res, next) => {
@@ -24,6 +63,16 @@ exports.listarCategorias = async (req, res, next) => {
     if (!categorias) {
       res.status(404).send({ mensaje: "No hay cantegorias registradas." });
     }
+
+    // verificamos el estado antes de enviar la respuestas.
+
+    categorias.forEach(categorias => {
+      if (categorias.estado == 1) {
+        categorias.nombreEstado = "Habilitada";
+      } else {
+        categorias.nombreEstado = "Inahabilitada";
+      }
+    });
 
     res.status(200).send(categorias);
   } catch (error) {
@@ -50,7 +99,7 @@ exports.listarCategoriasInhabilitadas = async (req, res, next) => {
 // Obtener la información de una categoria en particular
 exports.mostrarCategoria = async (req, res, next) => {
   try {
-    const laCategoria = await Categoria.find({ url: req.params.url });
+    const laCategoria = await Categoria.find({ url: req.query.url });
     if (!laCategoria) {
       res.status(404).send({
         mensaje: "La categoría especificada no se encuentra registrada."
@@ -61,6 +110,7 @@ exports.mostrarCategoria = async (req, res, next) => {
     res.status(422).send({ error: "Ocurrió un error al cargar la categoría." });
   }
 };
+
 // Agregar una nueva categoría
 exports.agregarCategoria = async (req, res, next) => {
   // obtenemos los datos del req.body
@@ -88,29 +138,11 @@ exports.agregarCategoria = async (req, res, next) => {
   }
 };
 
-// Actualizar una categoría
-exports.actualizarCategoria = async (req, res, next) => {
-  try {
-    const laCategoria = await Categoria.findOneAndUpdate(
-      {
-        url: req.params.url
-      },
-      req.body,
-      { new: true }
-    );
-    res.status(200).send({ mensaje: "Categoría actualizada correctamente." });
-  } catch (error) {
-    res.status(422).send({
-      error: "Ocurrió un error al momento de actualizar la categoría-"
-    });
-  }
-};
-
 // Inhabilitar una categoría
 exports.inhabilitarCategoria = async (req, res, next) => {
   try {
     const laCategoria = await Categoria.findOneAndUpdate(
-      { url: req.params.url },
+      { url: req.query.url },
       { estado: 0 },
       { new: true }
     );
@@ -127,7 +159,7 @@ exports.inhabilitarCategoria = async (req, res, next) => {
 exports.habilitarCategoria = async (req, res, next) => {
   try {
     const laCategoria = await Categoria.findOneAndUpdate(
-      { url: req.params.url },
+      { url: req.query.url },
       { estado: 1 },
       { new: true }
     );

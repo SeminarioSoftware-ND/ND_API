@@ -39,6 +39,9 @@ const categoriaSchema = new Schema({
   url: {
     type: String,
     trim: true
+  },
+  nombreEstado: {
+    type: String
   }
 });
 
