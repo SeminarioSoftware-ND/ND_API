@@ -34,7 +34,7 @@ const categoriaSchema = new Schema({
   imagen: {
     type: String,
     trim: true,
-    default: "categoriaDefecto.jpg"
+    default: "categoriaDefecto.jpeg"
   },
   url: {
     type: String,

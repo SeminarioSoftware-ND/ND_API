@@ -6,20 +6,16 @@ const fs = require("fs");
 
 // Actualizar una categoría
 exports.actualizarCategoria = async (req, res, next) => {
-  console.log("nuev petición");
-  console.log(req.body);
-
   if (
     req.body.imagenActual != req.body.imagen &&
-    req.body.imagenActual != "categoriaDefecto.jpg"
+    req.body.imagenActual != "categoriaDefecto.jpeg"
   ) {
     // 2. Eliminamos el logo anterior
-    path.join(__dirname, "../public/uploads/categorias/");
 
     fs.unlink(
       path.join(
         __dirname,
-        `../public/uploads/categorias/${elPerfil.actual.trim()}`
+        `../public/uploads/categorias/${req.body.imagenActual.trim()}`
       ),
       err => {
         if (err) throw err;
@@ -70,7 +66,7 @@ exports.listarCategorias = async (req, res, next) => {
       if (categorias.estado == 1) {
         categorias.nombreEstado = "Habilitada";
       } else {
-        categorias.nombreEstado = "Inahabilitada";
+        categorias.nombreEstado = "Inhabilitada";
       }
     });
 
@@ -142,7 +138,7 @@ exports.agregarCategoria = async (req, res, next) => {
 exports.inhabilitarCategoria = async (req, res, next) => {
   try {
     const laCategoria = await Categoria.findOneAndUpdate(
-      { url: req.query.url },
+      { url: req.params.url },
       { estado: 0 },
       { new: true }
     );
@@ -159,7 +155,7 @@ exports.inhabilitarCategoria = async (req, res, next) => {
 exports.habilitarCategoria = async (req, res, next) => {
   try {
     const laCategoria = await Categoria.findOneAndUpdate(
-      { url: req.query.url },
+      { url: req.params.url },
       { estado: 1 },
       { new: true }
     );

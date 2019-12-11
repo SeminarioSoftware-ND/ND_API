@@ -65,10 +65,16 @@ module.exports = function() {
   );
 
   // inhabilitar  una categoría
-  router.put("/inhabilitarCategoria", categoriaController.inhabilitarCategoria);
+  router.post(
+    "/inhabilitarCategoria/:url",
+    categoriaController.inhabilitarCategoria
+  );
 
   // habilitar una categoría
-  router.put("/habilitarCategoria", categoriaController.habilitarCategoria);
+  router.post(
+    "/habilitarCategoria/:url",
+    categoriaController.habilitarCategoria
+  );
 
   //subir una imagen para la categoría
   router.post("/categoriaImagen", categoriaController.subirImagen);
