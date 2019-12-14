@@ -1,13 +1,6 @@
 const Usuario = require("../models/Usuario");
 const shortid = require("shortid");
 const multer = require("multer");
-const passport = require("passport");
-
-// autenticar el usuario
-exports.autenticarUsuario = passport.authenticate("local", {
-  successRedirect: "/listarProductos",
-  failureRedirect: "/categorias"
-});
 
 // obtener la lista de usuarios habilitados
 exports.listarUsuarios = async (req, res, next) => {
@@ -74,6 +67,8 @@ exports.agregarUsuario = async (req, res, next) => {
     res.status(422).send({ mensaje: "Necesitas ingresar un correo." });
   } else if (!usuario.password) {
     res.status(422).send({ mensaje: "Debe ingresar una contraseña." });
+  } else if (usuario.password !== usuario.confirmarPassword) {
+    res.status(422).send({ mensaje: "Contraseñas ingresadas no coinciden." });
   } else {
     try {
       await usuario.save();

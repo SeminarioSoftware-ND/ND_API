@@ -5,6 +5,8 @@ const routes = require("./routes/index");
 const cors = require("cors");
 const path = require("path");
 const passport = require("./config/passport");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
 // creamos la constante del servidor
 const app = express();
@@ -28,6 +30,16 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("error", err => {
   console.log("Error al conectar con la base de datos", err);
 });
+
+// configuraciónh de cookie-parser
+app.use(cookieParser());
+app.use(
+  session({
+    secret: "elSecretoMS",
+    resave: false,
+    saveUninitialized: false
+  })
+);
 
 //  Implemetando password
 app.use(passport.initialize());

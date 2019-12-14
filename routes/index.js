@@ -5,17 +5,40 @@ const categoriaController = require("../controllers/categoriaController");
 const productoController = require("../controllers/productoController");
 const impresionController = require("../controllers/impresionController");
 const facturaController = require("../controllers/facturaController");
+const authController = require("../controllers/authController");
+const passport = require("passport");
 
+//----------------------------------------------------------------------Acciones de acceso(autenticación)-------------------------------------------//
 module.exports = function() {
   // ruta para autenticar accesos
-  router.post(
-    "/autenticar",
-    function(req, res, next) {
-      console.log(req.body);
-      next();
-    },
-    usuarioController.autenticarUsuario
-  );
+  router.post("/autenticarUsuario", function(req, res, next) {
+    passport.authenticate("local", function(err, user, info) {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        res
+          .status(422)
+          .send({ mensaje: "Correo o contraseña incorrecta ¡Revisa!" });
+      } else {
+        req.logIn(user, function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          return res.status(200).send({
+            mensaje: "Bienvenido a tu cuenta   " + user.nombre,
+            usuario: user.nombre,
+            email: user.correo
+          });
+        });
+      }
+    })(req, res, next);
+  });
+
+  // Cerrar sesión
+  router.get("/cerrarSesion", authController.cerrarSesion);
   // ----------------------------------------------------Control de usuarios-------------------------------------------|
 
   /*Agregar nuevos usuarios*/

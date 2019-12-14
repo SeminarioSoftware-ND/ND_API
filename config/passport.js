@@ -8,22 +8,21 @@ const Usuario = mongoose.model("Usuario");
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "correo",
+      usernameField: "email",
       passwordField: "password"
     },
-    async (correo, password, done) => {
-      const usuario = await Usuario.findOne({ correo: correo });
-
+    async (email, password, done, res) => {
+      const usuario = await Usuario.findOne({ correo: email });
       // si el usuario no existe
       if (!usuario) {
         return done(null, false, {
-          mensaje: ["Correo ingresado no es válido, revise"]
+          mensaje: "Usuario no registrado"
         });
       }
 
       // si el usuario existe verificar contraseña
 
-      const verificarPassword = Usuario.compa;
+      const verificarPassword = usuario.compararPassword(password);
 
       if (!verificarPassword) {
         //password incorrecto
@@ -33,17 +32,25 @@ passport.use(
       }
 
       // usuario y contraseña son correctas
-      return null, usuario;
+      return done(null, usuario);
     }
   )
 );
 
-passport.serializeUser((usuario, done) => donde(null, usuario._id));
+passport.serializeUser(function(usuario, done) {
+  done(null, usuario._id);
+});
+
+passport.deserializeUser(async function(id, done) {
+  const usuario = await Usuario.findById(id, function(err, usuario) {
+    done(err, usuario);
+  });
+});
+/*passport.serializeUser((usuario, done) => done(null, usuario._id));
 
 passport.deserializeUser(async (id, done) => {
   const usuario = await Usuario.findById(id).exec();
-
-  return donde(null, usuario);
-});
+  return done(null, usuario);
+});*/
 
 module.exports = passport;
