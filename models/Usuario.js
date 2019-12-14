@@ -95,6 +95,7 @@ usuarioSchema.post("save", function(error, doc, next) {
 
 // Realizar un método que automáticamente verifique el password ingresado
 // contra el almacenado (hash + salt)
+
 usuarioSchema.methods.compararPassword = function(candidatePassword) {
   return bcrypt.compareSync(candidatePassword, this.password);
 };

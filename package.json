@@ -27,6 +27,8 @@
     "node-gyp": "^6.0.1",
     "node-pre-gyp": "^0.14.0",
     "nodemon": "^1.19.4",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "shortid": "^2.2.15",
     "slug": "^1.1.0"
   },

@@ -4,8 +4,18 @@ const usuarioController = require("../controllers/usuarioController");
 const categoriaController = require("../controllers/categoriaController");
 const productoController = require("../controllers/productoController");
 const impresionController = require("../controllers/impresionController");
+const facturaController = require("../controllers/facturaController");
 
 module.exports = function() {
+  // ruta para autenticar accesos
+  router.post(
+    "/autenticar",
+    function(req, res, next) {
+      console.log(req.body);
+      next();
+    },
+    usuarioController.autenticarUsuario
+  );
   // ----------------------------------------------------Control de usuarios-------------------------------------------|
 
   /*Agregar nuevos usuarios*/
@@ -84,8 +94,17 @@ module.exports = function() {
 
   // ----------------------------------------------------Control de productos-------------------------------------------|
 
+  // listar categorías disponibles para los productos
+  router.get("/categoriasProducto", productoController.cargarCategorias);
+
   // listar todos los pruductos
   router.get("/listarProductos", productoController.listarProductos);
+
+  // listar productos por categoría
+  router.get(
+    "/listarProductoCategoria",
+    productoController.listarProductosCategoria
+  );
 
   // listar productos inhabilitados
   router.get(
@@ -100,20 +119,27 @@ module.exports = function() {
   router.post("/crearProducto", productoController.agregarProducto);
 
   // actualizar producto
-  router.put("/actualizarProducto/:url", productoController.actualizarProdcuto);
+  router.post(
+    "/actualizarProducto/:url",
+    productoController.actualizarProducto
+  );
 
   // inhabilitar producto
-  router.put(
+  router.post(
     "/inhabilitarProducto/:url",
     productoController.inhabilitarProducto
   );
 
   //Habilitar producto
-  router.put("/habilitarProducto/:url", productoController.habilitarProducto);
+  router.post("/habilitarProducto/:url", productoController.habilitarProducto);
 
   // subir imagen de producto
 
   router.post("/productoImagen", productoController.subirImagen);
+
+  // mostar imagen del producto
+
+  router.get("/imagenProducto", productoController.mostrarImagen);
 
   // ----------------------------------------------------Control de impresiones-------------------------------------------|
   // listar todas las impresiones
@@ -151,6 +177,11 @@ module.exports = function() {
 
   // subir un archivo al servidor
   router.post("/subirArchivo", impresionController.subirArchivo);
+
+  // ----------------------------------------------------Control de pedidos-------------------------------------------|
+
+  // guardar una factura generada
+  router.post("/guardarPedido", facturaController.guardarFactura);
 
   return router;
 };

@@ -1,14 +1,27 @@
 const Producto = require("../models/Producto");
+const Categoria = require("../models/Categoria");
 const shortid = require("shortid");
 const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 // listar todos los porductos
 exports.listarProductos = async (req, res, next) => {
   try {
-    const productos = await Producto.find({});
+    const productos = await Producto.find({}).populate("categoria");
+
     if (!productos) {
       res.status(404).send({ mensaje: "No hay productos para mostar" });
     }
+
+    // mapeamos el nombre del estado de cada uno
+    productos.forEach(productos => {
+      if (productos.estado == 1) {
+        productos.nombreEstado = "Habilitado";
+      } else {
+        productos.nombreEstado = "Inhabilitado";
+      }
+    });
 
     res.status(200).send(productos);
   } catch (error) {
@@ -86,7 +99,25 @@ exports.mostrarProducto = async (req, res, next) => {
 };
 
 // actualizar un producto
-exports.actualizarProdcuto = async (req, res, next) => {
+exports.actualizarProducto = async (req, res, next) => {
+  // validamos si se cambio de imagen.
+  if (
+    req.body.imagenActual != req.body.imagen &&
+    req.body.imagenActual != "productoImagen.jpg"
+  ) {
+    // 2. Eliminamos el logo anterior
+
+    fs.unlink(
+      path.join(
+        __dirname,
+        `../public/uploads/productos/${req.body.imagenActual.trim()}`
+      ),
+      err => {
+        if (err) throw err;
+      }
+    );
+  }
+
   try {
     const elproducto = await Producto.findOneAndUpdate(
       {
@@ -123,15 +154,15 @@ exports.inhabilitarProducto = async (req, res, next) => {
 exports.habilitarProducto = async (req, res, next) => {
   try {
     const elProducto = await Producto.findOneAndUpdate(
-      { url: req.params.ur },
+      { url: req.params.url },
       { estado: 1 },
       { new: true }
     );
     res.status(200).send({ mensaje: "Producto habilitado correctamente." });
   } catch (error) {
-    res
-      .status(422)
-      .send({ error: "Ocurrió un error al momento de habilitar el producto." });
+    res.status(422).send({
+      error: "Ocurrió un error al momento de habilitado el producto."
+    });
   }
 };
 
@@ -155,6 +186,58 @@ exports.subirImagen = (req, res, next) => {
       res.status(200).send({ imagen: `${req.file.filename}` });
     }
   });
+};
+
+// función para mostrar una imagen
+// Mostrar una imagen  de categoría
+exports.mostrarImagen = (req, res, next) => {
+  var options = {
+    root: path.join(__dirname, "../public/uploads/productos/"),
+    dotfiles: "deny"
+  };
+
+  var fileName = req.query.url;
+
+  res.sendFile(path.resolve(`${options.root}/${fileName}`));
+};
+
+// cargar las categorías habilitadas
+exports.cargarCategorias = async (req, res, next) => {
+  var categoriaFormato = [(label = "")];
+
+  try {
+    const lasCategorias = await Categoria.find({ estado: 1 });
+
+    lasCategorias.forEach(cat => {
+      categoriaFormato.push({ label: cat.nombre, value: cat._id });
+    });
+
+    if (!lasCategorias) {
+      res.status(404).send({ mensaje: "No hay categorías disponibles." });
+    }
+    res.status(200).send(categoriaFormato);
+  } catch (error) {
+    res
+      .status(422)
+      .send({ error: "Ocurrió un error al cargar las categorías." });
+  }
+};
+
+// listar productos por una categoría
+exports.listarProductosCategoria = async (req, res, next) => {
+  try {
+    // traemos los valores de la categoría seleccionada
+    const cat = await Categoria.find({ url: req.query.url });
+
+    const losProductos = await Producto.find({ categoria: cat[0]._id });
+    if (!losProductos) {
+      res.status(404).send({ mensaje: "No hay productos registrados." });
+    }
+
+    res.status(200).send(losProductos);
+  } catch (error) {
+    res.status(422).send({ error: "Ocurrió un error al cargar los productos" });
+  }
 };
 
 // Opciones de configuración de Multer

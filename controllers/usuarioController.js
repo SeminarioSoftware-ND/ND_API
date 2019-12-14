@@ -1,6 +1,13 @@
 const Usuario = require("../models/Usuario");
 const shortid = require("shortid");
 const multer = require("multer");
+const passport = require("passport");
+
+// autenticar el usuario
+exports.autenticarUsuario = passport.authenticate("local", {
+  successRedirect: "/listarProductos",
+  failureRedirect: "/categorias"
+});
 
 // obtener la lista de usuarios habilitados
 exports.listarUsuarios = async (req, res, next) => {
@@ -56,7 +63,8 @@ exports.mostrarUsuario = async (req, res, next) => {
 // Agregar un nuevo usuario
 exports.agregarUsuario = async (req, res, next) => {
   const usuario = new Usuario(req.body);
-
+  // variable de errores
+  const losErrores = [];
   // evaluar si se ingresan los datos necesarios.
   if (!usuario.nombre) {
     res
@@ -71,9 +79,8 @@ exports.agregarUsuario = async (req, res, next) => {
       await usuario.save();
       res.status(200).send({ mensaje: "Usuario registrado correctamente" });
     } catch (error) {
-      res
-        .status(422)
-        .send({ mensaje: "Ocurrió un error al momento de guardar el usuario" });
+      losErrores.push(error);
+      res.status(422).send(losErrores);
     }
   }
 };

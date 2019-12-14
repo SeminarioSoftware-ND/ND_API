@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const routes = require("./routes/index");
 const cors = require("cors");
 const path = require("path");
+const passport = require("./config/passport");
 
 // creamos la constante del servidor
 const app = express();
@@ -27,6 +28,11 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("error", err => {
   console.log("Error al conectar con la base de datos", err);
 });
+
+//  Implemetando password
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(

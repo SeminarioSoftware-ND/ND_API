@@ -32,7 +32,7 @@ const productoSchemma = new Schema({
   },
   imagen: {
     type: String,
-    default: "productoImagen.jpg"
+    default: "productoImagen.jpeg"
   },
   precio: {
     type: Number
@@ -44,6 +44,9 @@ const productoSchemma = new Schema({
   url: {
     type: String,
     trim: true
+  },
+  nombreEstado: {
+    type: String
   }
 });
 
