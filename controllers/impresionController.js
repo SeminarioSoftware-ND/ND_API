@@ -8,12 +8,13 @@ const Cliente = require("../models/Usuario");
 exports.listarImpresiones = async (req, res, next) => {
   try {
     const lasImpresiones = await Impresion.find({});
+
     if (!lasImpresiones) {
       req
         .status(404)
         .send({ mensaje: "No hay pedido de impresiones a mostar." });
     }
-    res.status(200).send(lasImpresiones);
+    res.status(200).send({ lasImpresiones });
   } catch (error) {
     res.status(422).send({
       error: "Ocurrió un error al momento de cargar pedido de impresiones."
@@ -40,7 +41,7 @@ exports.listarImpresionesPendientes = async (req, res, next) => {
 
 exports.listarImpresionesRealizadas = async (req, res, next) => {
   try {
-    const lasImpresiones = await Impresion.find({ estado: 1 });
+    const lasImpresiones = await Impresion.find({ estado: 0 });
     if (!lasImpresiones) {
       res
         .status(404)
@@ -77,8 +78,18 @@ exports.agregarImpresion = async (req, res, next) => {
 
   const elCliente = await Cliente.find({ correo: req.body.email });
 
+  const Dates = new Date();
+
+  const laFecha = `${Dates.getDate()}/${Dates.getMonth() +
+    1}/${Dates.getFullYear()}`;
+  const laHora = `${Dates.getHours()}: ${Dates.getMinutes()}: ${Dates.getSeconds()}`;
+
+  const fecha = `${laFecha}-${laHora}`;
+
   // anexamos el cliente a la impresión
   impresion.cliente = elCliente[0]._id;
+  impresion.fecha = fecha;
+  impresion.correo = req.body.email;
 
   // evaluamos que vengan los datos correctos
   if (!impresion.documento) {
@@ -114,15 +125,13 @@ exports.actualizarImpresion = async (req, res, next) => {
   try {
     const laImpresion = await Impresion.findOneAndUpdate(
       {
-        url: req.paramas.url
+        url: req.params.url
       },
       req.body,
       { new: true }
     );
 
-    res
-      .status(200)
-      .send({ mensaje: "Pedido de impresión actualizado correctamente." });
+    res.status(200).send({ mensaje: "Estado actualizado correctamente." });
   } catch (error) {
     res.status(422).send({
       error: "Ocurrió un error al momento de actualizar el pedido de impresión."
@@ -184,11 +193,35 @@ const configuracionMulter = {
     destination: (req, res, cb) => {
       cb(null, __dirname + "../../public/uploads/documentos");
     },
+
     filename: (req, file, cb) => {
       const extension = file.originalname.split(".")[1];
       cb(null, `${shortid.generate()}.${extension}`);
     }
-  }))
+  })),
+
+  // Verificar que es una imagen válida mediante mimetype
+  fileFilter(req, file, cb) {
+    if (
+      file.mimetype === "video/x-flv" ||
+      file.mimetype === "video/mp4" ||
+      file.mimetype === "video/quicktime" ||
+      file.mimetype === "application/x-mpegURL" ||
+      file.mimetype === "video/3gpp" ||
+      file.mimetype === "video/x-msvideo" ||
+      file.mimetype === "video/x-ms-wmv" ||
+      file.mimetype === "video/x-msvideo"
+    ) {
+      // El callback se ejecuta como true o false
+      // se retorna true cuando se acepta el documente
+      cb(
+        new Error("Formato de archivo no válido, solo documentos e imágenes"),
+        false
+      );
+    } else {
+      cb(null, true);
+    }
+  }
 };
 
 const upload = multer(configuracionMulter).single("file");

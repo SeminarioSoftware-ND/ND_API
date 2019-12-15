@@ -7,6 +7,7 @@ const impresionController = require("../controllers/impresionController");
 const facturaController = require("../controllers/facturaController");
 const authController = require("../controllers/authController");
 const passport = require("passport");
+const path = require("path");
 
 //----------------------------------------------------------------------Acciones de acceso(autenticación)-------------------------------------------//
 module.exports = function() {
@@ -61,16 +62,19 @@ module.exports = function() {
   router.get("/usuario/:url", usuarioController.mostrarUsuario);
 
   /*Editar la información de perfil de usuario */
-  router.put("/usuario/editarPerfil/:url", usuarioController.actualizarUsuario);
+  router.post(
+    "/usuario/editarPerfil/:url",
+    usuarioController.actualizarUsuario
+  );
 
   /*Inhabiltar un perfil de usuario */
-  router.put(
+  router.post(
     "/usuarios/inhabilitarPerfil/:url",
     usuarioController.inhabilitarUsuario
   );
 
   /*Habilitar Perfil de usuario */
-  router.put(
+  router.post(
     "/usuarios/habilitarPerfil/:url",
     usuarioController.habilitarUsuario
   );
@@ -188,7 +192,7 @@ module.exports = function() {
   router.post("/nuevaImpresion", impresionController.agregarImpresion);
 
   // actuaizar un pedido de impresion
-  router.put(
+  router.post(
     "/actualizarImpresion/:url",
     impresionController.actualizarImpresion
   );
@@ -201,6 +205,18 @@ module.exports = function() {
 
   // subir un archivo al servidor
   router.post("/subirArchivo", impresionController.subirArchivo);
+
+  // descargar un archivo de
+  router.get("/descargarDocumento", function(req, res) {
+    var root = path.join(__dirname, "../public/uploads/documentos/");
+    res.download(`${root}/${req.query.nombreArchivo}`, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("listo");
+      }
+    });
+  });
 
   // ----------------------------------------------------Control de pedidos-------------------------------------------|
 

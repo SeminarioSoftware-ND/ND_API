@@ -39,6 +39,14 @@ const impresionSchemma = new Schema({
   },
   url: {
     type: String
+  },
+  fecha: {
+    type: String,
+    trim: true
+  },
+  correo: {
+    type: String,
+    trim: true
   }
 });
 
