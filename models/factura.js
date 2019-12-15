@@ -36,6 +36,10 @@ const FacturaSchema = new Schema({
   fecha: {
     type: String,
     trim: true
+  },
+  cliente: {
+    type: Schema.ObjectId,
+    ref: "Usuario"
   }
 });
 

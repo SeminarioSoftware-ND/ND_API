@@ -30,7 +30,8 @@ module.exports = function() {
           return res.status(200).send({
             mensaje: "Bienvenido a tu cuenta   " + user.nombre,
             usuario: user.nombre,
-            email: user.correo
+            email: user.correo,
+            admin: user.estado
           });
         });
       }

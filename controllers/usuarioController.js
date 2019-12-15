@@ -67,7 +67,7 @@ exports.agregarUsuario = async (req, res, next) => {
     res.status(422).send({ mensaje: "Necesitas ingresar un correo." });
   } else if (!usuario.password) {
     res.status(422).send({ mensaje: "Debe ingresar una contraseña." });
-  } else if (usuario.password !== usuario.confirmarPassword) {
+  } else if (usuario.password !== req.body.confirmarPassword) {
     res.status(422).send({ mensaje: "Contraseñas ingresadas no coinciden." });
   } else {
     try {

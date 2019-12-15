@@ -29,7 +29,7 @@ const impresionSchemma = new Schema({
   especificaciones: {
     type: String
   },
-  usuario: {
+  cliente: {
     type: Schema.ObjectId,
     ref: "Usuario"
   },
@@ -39,10 +39,6 @@ const impresionSchemma = new Schema({
   },
   url: {
     type: String
-  },
-  fechaEntrega: {
-    type: Date,
-    default: Date.now
   }
 });
 

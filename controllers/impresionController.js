@@ -1,6 +1,7 @@
 const Impresion = require("../models/Impresion");
 const multer = require("multer");
 const shortid = require("shortid");
+const Cliente = require("../models/Usuario");
 
 // listar todas las impresiones
 
@@ -74,6 +75,11 @@ exports.mostrarImpresion = async (req, res, next) => {
 exports.agregarImpresion = async (req, res, next) => {
   const impresion = new Impresion(req.body);
 
+  const elCliente = await Cliente.find({ correo: req.body.email });
+
+  // anexamos el cliente a la impresión
+  impresion.cliente = elCliente[0]._id;
+
   // evaluamos que vengan los datos correctos
   if (!impresion.documento) {
     res
@@ -83,7 +89,7 @@ exports.agregarImpresion = async (req, res, next) => {
     res.status(422).send({
       mensaje: "Necesitas seleccionar el tipo de hoja y el tamaño del papel."
     });
-  } else if (!impresion.cantidad) {
+  } else if (!impresion.cantidadHojas) {
     res
       .status(422)
       .send({ mensaje: "Necesitas especificar la cantidad de hojas." });
@@ -91,11 +97,13 @@ exports.agregarImpresion = async (req, res, next) => {
     // los datos ingresados son correctos
     try {
       await impresion.save();
-      res.status(200).send({ mensaje: "Pedido agregado correctamente." });
+      res
+        .status(200)
+        .send({ mensaje: "Solicitud de impresión enviada correctamente." });
     } catch (error) {
       res.status(422).send({
-        error:
-          "Ocurrió un error al mon¿mento de guardar el pedido de impresión."
+        mensaje:
+          "Ocurrió un error al momento de guardar el pedido de impresión."
       });
     }
   }
@@ -143,14 +151,8 @@ exports.eliminarImpresion = async (req, res, next) => {
 };
 
 // subir una image
-
 // Subir un archivo al servidor
 exports.subirArchivo = (req, res, next) => {
-  console.log(req.body);
-
-  //if (!req.body.file) {
-  res.status(422).send({ mensaje: "debes ingresar la imagen" });
-  // } else {
   upload(req, res, function(error) {
     if (error) {
       // Errores de multer
@@ -169,7 +171,6 @@ exports.subirArchivo = (req, res, next) => {
       res.status(200).send({ imagen: `${req.file.filename}` });
     }
   });
-  // }
 };
 
 // Opciones de configuración de Multer
@@ -184,21 +185,10 @@ const configuracionMulter = {
       cb(null, __dirname + "../../public/uploads/documentos");
     },
     filename: (req, file, cb) => {
-      const extension = file.mimetype.split("/")[1];
+      const extension = file.originalname.split(".")[1];
       cb(null, `${shortid.generate()}.${extension}`);
     }
-  })),
-
-  // Verificar que es una imagen válida mediante mimetype
-  fileFilter(req, file, cb) {
-    if (file.mimetype === "application/vnd.ms-excel") {
-      // El callback se ejecuta como true o false
-      // se retorna true cuando se acepta la imagen
-      cb(null, true);
-    } else {
-      cb(new Error("Formato de archivo no válido."), false);
-    }
-  }
+  }))
 };
 
 const upload = multer(configuracionMulter).single("file");
