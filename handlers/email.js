@@ -34,9 +34,13 @@ exports.enviar = async opciones => {
     subject: "importante",
     template: "hola",
     context: {
-      resetUrl: "hola"
+      usuarioNombre: opciones.cliente,
+      UsuarioCorreo: opciones.usuario[0].correo,
+      productos: opciones.productos,
+      total: opciones.total
     }
   };
+  console.log(opciones.productos);
 
   const sendMail = util.promisify(transport.sendMail, transport);
   return sendMail.call(transport, opcionesEmail);

@@ -14,13 +14,18 @@ exports.cerrarSesion = (req, res, next) => {
 };
 
 exports.enviarMensaje = async (req, res) => {
-  const usuario = await Usuario.find({ correo: req.body.correo });
+  const usuario = await Usuario.find({ correo: req.body.email });
+  const { productos, total, cliente } = req.body;
+
   if (!usuario) {
     res.status(404).send({ mensaje: "El correo no existe." });
   } else {
     // enviaremos el email
     await enviarEmail.enviar({
-      usuario
+      usuario,
+      productos,
+      total,
+      cliente
     });
     res
       .status(200)
