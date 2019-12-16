@@ -1,4 +1,5 @@
 const express = require("express");
+const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routes = require("./routes/index");
@@ -30,6 +31,10 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("error", err => {
   console.log("Error al conectar con la base de datos", err);
 });
+// Habilitar Handlebars como Template Engine
+app.engine("handlebars", exphbs({ defaultLayout: "layout" }));
+
+app.set("view engine", "handlebars");
 
 // configuraciónh de cookie-parser
 app.use(cookieParser());

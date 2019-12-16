@@ -218,10 +218,14 @@ module.exports = function() {
     });
   });
 
-  // ----------------------------------------------------Control de pedidos-------------------------------------------|
+  // ----------------------------------------------------Control de facturas y pedidos-------------------------------------------|
 
   // guardar una factura generada
   router.post("/guardarPedido", facturaController.guardarFactura);
+
+  /// enviar factura por correo
+
+  router.post("/enviarCorreo", authController.enviarMensaje);
 
   return router;
 };
